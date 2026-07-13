@@ -1,0 +1,301 @@
+/* Global CSS Overrides for Streamlit */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+    --bg-primary: #080b10;
+    --bg-secondary: #0f141c;
+    --bg-tertiary: #171e28;
+    --accent: #29b6f6;
+    --accent-glow: rgba(41, 182, 246, 0.15);
+    --green: #00e676;
+    --green-glow: rgba(0, 230, 118, 0.15);
+    --red: #ff1744;
+    --red-glow: rgba(255, 23, 68, 0.15);
+    --border: rgba(255, 255, 255, 0.06);
+    --text-primary: #ffffff;
+    --text-secondary: #8e9cae;
+    --text-muted: #576575;
+}
+
+/* Base Body Styles */
+.stApp {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+}
+
+/* Sidebar Custom Styling */
+section[data-testid="stSidebar"] {
+    background-color: var(--bg-secondary) !important;
+    border-right: 1px solid var(--border);
+}
+
+/* Glassmorphic Metrics Card */
+.terminal-card {
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, #121824 100%);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+    margin-bottom: 15px;
+}
+
+.terminal-card:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+}
+
+.terminal-card-header {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.terminal-card-value {
+    color: var(--text-primary);
+    font-size: 1.8rem;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: -0.02em;
+    margin: 5px 0;
+}
+
+.terminal-card-footer {
+    display: flex;
+    align-items: center;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.trend-up {
+    color: var(--green);
+    text-shadow: 0 0 10px var(--green-glow);
+}
+
+.trend-down {
+    color: var(--red);
+    text-shadow: 0 0 10px var(--red-glow);
+}
+
+.trend-neutral {
+    color: var(--text-secondary);
+}
+
+/* Custom Table Style */
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 0.9rem;
+    min-width: 400px;
+    background-color: var(--bg-secondary);
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+}
+
+.styled-table th {
+    background-color: var(--bg-tertiary);
+    color: var(--text-secondary);
+    text-align: left;
+    padding: 12px 15px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--border);
+}
+
+.styled-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.styled-table tr:last-of-type td {
+    border-bottom: none;
+}
+
+.styled-table tr:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Glassmorphic Watchlist Item */
+.watchlist-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: all 0.2s ease;
+}
+
+.watchlist-row:hover {
+    border-color: var(--accent);
+    background-color: var(--bg-tertiary);
+}
+
+/* Custom Headers */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary) !important;
+}
+
+.terminal-title {
+    background: linear-gradient(90deg, #ffffff 0%, #a5b4fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+}
+
+/* Status Indicator Dot */
+.status-dot {
+    height: 8px;
+    width: 8px;
+    background-color: var(--green);
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 8px var(--green);
+    margin-right: 8px;
+}
+
+/* Hide Streamlit components we don't want */
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header[data-testid="stHeader"] {
+    background-color: transparent !important;
+}
+/* Ensure sidebar toggle control remains visible */
+button[data-testid="collapsedControl"] {
+    visibility: visible !important;
+    color: var(--text-primary) !important;
+    background-color: var(--bg-tertiary) !important;
+    border-radius: 4px !important;
+    border: 1px solid var(--border) !important;
+    z-index: 999999 !important;
+}
+
+/* Custom Tabs */
+button[data-baseweb="tab"] {
+    background-color: transparent !important;
+    color: var(--text-secondary) !important;
+    border-bottom: 2px solid transparent !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+}
+
+button[data-baseweb="tab"][aria-selected="true"] {
+    color: var(--accent) !important;
+    border-bottom-color: var(--accent) !important;
+}
+
+/* Force visibility of selectbox and dropdown elements in dark mode */
+div[data-baseweb="select"] {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border) !important;
+}
+
+div[role="listbox"] {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+div[role="option"] {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+div[role="option"]:hover {
+    background-color: var(--bg-tertiary) !important;
+}
+
+/* Fix text colors inside tags (multiselect pills) */
+span[data-baseweb="tag"] {
+    background-color: var(--bg-tertiary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border) !important;
+}
+
+/* Standard inputs styling */
+input, select, textarea {
+    color: var(--text-primary) !important;
+    background-color: var(--bg-secondary) !important;
+}
+
+/* Explicit styling for page links inside stPageLink container */
+div[data-testid="stSidebarUserContent"] div[data-testid="stPageLink"] a {
+    color: var(--text-primary) !important;
+    background-color: var(--bg-tertiary) !important;
+    border: 1px solid var(--border) !important;
+    padding: 10px 14px !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    margin-bottom: 8px !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+div[data-testid="stSidebarUserContent"] div[data-testid="stPageLink"] a:hover {
+    border-color: var(--accent) !important;
+    background-color: var(--bg-secondary) !important;
+    box-shadow: 0 0 10px var(--accent-glow);
+    transform: translateX(3px);
+}
+
+/* Force page link text visibility */
+div[data-testid="stSidebarUserContent"] div[data-testid="stPageLink"] a p {
+    color: var(--text-primary) !important;
+    font-size: 0.95rem !important;
+    margin: 0 !important;
+    font-weight: 600 !important;
+}
+
+/* Glowing text effects for metrics values and labels */
+.terminal-card-value {
+    color: var(--text-primary) !important;
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.35), 0 0 5px rgba(255, 255, 255, 0.2);
+}
+
+.trend-up {
+    color: var(--green) !important;
+    text-shadow: 0 0 12px rgba(0, 230, 118, 0.6), 0 0 5px rgba(0, 230, 118, 0.3) !important;
+    font-weight: bold;
+}
+
+.trend-down {
+    color: var(--red) !important;
+    text-shadow: 0 0 12px rgba(255, 23, 68, 0.6), 0 0 5px rgba(255, 23, 68, 0.3) !important;
+    font-weight: bold;
+}
+
+.terminal-title {
+    background: linear-gradient(90deg, #ffffff 0%, #a5b4fc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    text-shadow: 0 0 15px rgba(165, 180, 252, 0.4);
+}
+
+
