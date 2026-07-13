@@ -1,5 +1,14 @@
 import os
 import streamlit as st
+import textwrap
+
+def inject_html(html_str: str, sidebar: bool = False):
+    """Cleanly dedents and injects HTML/CSS into Streamlit, avoiding code-block formatting."""
+    dedented = textwrap.dedent(html_str).strip()
+    if sidebar:
+        st.sidebar.markdown(dedented, unsafe_allow_html=True)
+    else:
+        st.markdown(dedented, unsafe_allow_html=True)
 
 def load_custom_css():
     """Reads custom stylesheet and injects it into streamlit app."""
@@ -7,25 +16,25 @@ def load_custom_css():
     if os.path.exists(css_path):
         with open(css_path, "r") as f:
             css = f.read()
-        st.markdown(f"<style>{css}</style>", unsafe_allow_html=True)
+        inject_html(f"<style>{css}</style>")
     else:
         st.warning("Stylesheet not found.")
 
 def render_header(title: str, subtitle: str = None):
     """Renders a beautiful styled header."""
     if subtitle:
-        st.markdown(f"""
+        inject_html(f"""
             <div style='margin-bottom: 25px;'>
                 <h1 class='terminal-title' style='margin: 0; font-size: 2.2rem;'>{title}</h1>
                 <p style='color: var(--text-secondary); margin: 5px 0 0 0; font-size: 0.95rem;'>{subtitle}</p>
             </div>
-        """, unsafe_allow_html=True)
+        """)
     else:
-        st.markdown(f"""
+        inject_html(f"""
             <div style='margin-bottom: 25px;'>
                 <h1 class='terminal-title' style='margin: 0; font-size: 2.2rem;'>{title}</h1>
             </div>
-        """, unsafe_allow_html=True)
+        """)
 
 def render_metric_card(title: str, value: str, change_pct: float, icon: str = ""):
     """Renders a high-fidelity quantitative terminal metric card."""
@@ -33,7 +42,7 @@ def render_metric_card(title: str, value: str, change_pct: float, icon: str = ""
     trend_sign = "+" if change_pct >= 0 else ""
     icon_html = f"<span>{icon}</span>" if icon else ""
     
-    st.markdown(f"""
+    inject_html(f"""
         <div class="terminal-card">
             <div class="terminal-card-header">
                 <span>{title}</span>
@@ -45,25 +54,23 @@ def render_metric_card(title: str, value: str, change_pct: float, icon: str = ""
                 <span style="font-weight: normal; color: var(--text-muted); margin-left: 5px;">(24h)</span>
             </div>
         </div>
-    """, unsafe_allow_html=True)
+    """)
 
 def render_status_sidebar():
     """Renders a terminal system status on sidebar."""
-    with st.sidebar:
-        st.markdown("---")
-        st.markdown("""
-            <div style="padding: 10px; background-color: var(--bg-tertiary); border-radius: 8px; border: 1px solid var(--border);">
-                <div style="display: flex; align-items: center; font-size: 0.8rem; font-weight: 600;">
-                    <span class="status-dot"></span>
-                    <span style="color: var(--text-primary);">QUANTLAB ENGINE ACTIVE</span>
-                </div>
-                <div style="margin-top: 8px; font-size: 0.7rem; color: var(--text-secondary); font-family: 'JetBrains Mono', monospace;">
-                    <span>SQLite Cache: <b>ONLINE</b></span><br/>
-                    <span>Feed: <b>YAHOO FINANCE</b></span><br/>
-                    <span>Platform: <b>Streamlit Local</b></span>
-                </div>
+    inject_html("""
+        <div style="padding: 10px; background-color: var(--bg-tertiary); border-radius: 8px; border: 1px solid var(--border);">
+            <div style="display: flex; align-items: center; font-size: 0.8rem; font-weight: 600;">
+                <span class="status-dot"></span>
+                <span style="color: var(--text-primary);">QUANTLAB ENGINE ACTIVE</span>
             </div>
-        """, unsafe_allow_html=True)
+            <div style="margin-top: 8px; font-size: 0.7rem; color: var(--text-secondary); font-family: 'JetBrains Mono', monospace;">
+                <span>SQLite Cache: <b>ONLINE</b></span><br/>
+                <span>Feed: <b>YAHOO FINANCE</b></span><br/>
+                <span>Platform: <b>Streamlit Local</b></span>
+            </div>
+        </div>
+    """, sidebar=True)
 
 def format_currency(val_usd: float, symbol_only: bool = False) -> str:
     """Format USD value to USD ($) or INR (₹) depending on session state."""
@@ -94,9 +101,8 @@ def render_currency_selector():
 
 def render_top_left_logo():
     """Put the website name on the top left corner of the page."""
-    st.markdown("""
+    inject_html("""
         <div style="position: absolute; top: -55px; left: 60px; z-index: 999999; display: flex; align-items: center;">
             <span style="font-weight: 800; font-size: 1.4rem; color: var(--accent); letter-spacing: -0.03em; text-shadow: 0 0 10px var(--accent-glow);">⚡ QuantLab</span>
         </div>
-    """, unsafe_allow_html=True)
-
+    """)
