@@ -3,7 +3,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 
 # Import custom modules
-from components.ui import load_custom_css, render_header, render_metric_card, render_status_sidebar, format_currency, render_currency_selector, render_top_left_logo
+from components.ui import load_custom_css, render_header, render_metric_card, render_status_sidebar, format_currency, render_currency_selector, render_top_left_logo, inject_html
 from database.db_manager import get_watchlist, add_to_watchlist, remove_from_watchlist, get_backtest_history
 from utils.data_loader import fetch_ticker_data, get_market_overview, search_ticker
 from charts.terminal import plot_equity_curve
@@ -29,11 +29,11 @@ if 'started' not in st.session_state:
 # Landing Page
 if not st.session_state.started:
     # Render splash landing page
-    st.markdown("<div style='height: 100px;'></div>", unsafe_allow_html=True)
+    inject_html("<div style='height: 100px;'></div>")
     
     col_l1, col_l2, col_l3 = st.columns([1, 4, 1])
     with col_l2:
-        st.markdown("""
+        inject_html("""
             <div style="text-align: center; background: linear-gradient(135deg, var(--bg-secondary) 0%, #121824 100%); padding: 50px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 12px 40px rgba(0,0,0,0.5);">
                 <div style="font-size: 4rem; margin-bottom: 10px;">⚡</div>
                 <h1 style="font-size: 3.5rem; margin: 0; background: linear-gradient(90deg, #ffffff 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 800; letter-spacing: -0.04em; text-shadow: 0 0 30px var(--accent-glow);">QuantLab Terminal</h1>
@@ -55,7 +55,7 @@ if not st.session_state.started:
                     </div>
                 </div>
             </div>
-        """, unsafe_allow_html=True)
+        """)
         
         # Center start button
         st.markdown("<div style='height: 10px;'></div>", unsafe_allow_html=True)
