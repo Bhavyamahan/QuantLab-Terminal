@@ -39,10 +39,41 @@ def fetch_ticker_data(ticker: str, start_date: str, end_date: str) -> pd.DataFra
         print(f"Error fetching data for {ticker}: {e}")
         return pd.DataFrame()
 
+@st.cache_data(ttl=300)  # Cache watchlist prices for 5 mins
+def fetch_multiple_tickers(tickers: list) -> dict:
+    """
+    Fetch historical daily data for multiple stock tickers in parallel.
+    """
+    if not tickers:
+        return {}
+    try:
+        end_date = datetime.now().date()
+        start_date = end_date - timedelta(days=10)
+        data = yf.download(tickers, start=start_date, end=end_date, group_by='ticker', progress=False)
+        
+        result = {}
+        for ticker in tickers:
+            if len(tickers) == 1:
+                df = data
+            else:
+                try:
+                    df = data[ticker]
+                except KeyError:
+                    continue
+            
+            if not df.empty:
+                df = df.dropna().reset_index()
+                df.columns = [col.lower() for col in df.columns]
+                result[ticker] = df
+        return result
+    except Exception as e:
+        print(f"Error fetching multiple tickers: {e}")
+        return {}
+
 @st.cache_data(ttl=900)  # Cache market info for 15 mins
 def get_market_overview() -> dict:
     """
-    Fetch current market status/indices.
+    Fetch current market status/indices in parallel.
     """
     indices = {
         "^GSPC": "S&P 500",
@@ -52,30 +83,43 @@ def get_market_overview() -> dict:
     }
     
     overview = {}
-    end_date = datetime.now()
-    start_date = end_date - timedelta(days=5)
+    end_date = datetime.now().date()
+    start_date = end_date - timedelta(days=10)
     
-    for symbol, name in indices.items():
-        df = fetch_ticker_data(symbol, start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d"))
-        if not df.empty and len(df) >= 2:
-            last_row = df.iloc[-1]
-            prev_row = df.iloc[-2]
+    try:
+        data = yf.download(list(indices.keys()), start=start_date, end=end_date, group_by='ticker', progress=False)
+        for symbol, name in indices.items():
+            if len(indices) == 1:
+                df = data
+            else:
+                try:
+                    df = data[symbol]
+                except KeyError:
+                    continue
             
-            close_val = float(last_row['close'])
-            prev_close = float(prev_row['close'])
-            change = close_val - prev_close
-            change_pct = (change / prev_close) * 100
-            
-            # Get small history for sparkline
-            sparkline_vals = df['close'].tail(5).tolist()
-            
-            overview[symbol] = {
-                "name": name,
-                "value": close_val,
-                "change": change,
-                "change_pct": change_pct,
-                "sparkline": sparkline_vals
-            }
+            if not df.empty:
+                df = df.dropna().reset_index()
+                df.columns = [col.lower() for col in df.columns]
+                if len(df) >= 2:
+                    last_row = df.iloc[-1]
+                    prev_row = df.iloc[-2]
+                    
+                    close_val = float(last_row['close'])
+                    prev_close = float(prev_row['close'])
+                    change = close_val - prev_close
+                    change_pct = (change / prev_close) * 100
+                    
+                    sparkline_vals = df['close'].tail(5).tolist()
+                    
+                    overview[symbol] = {
+                        "name": name,
+                        "value": close_val,
+                        "change": change,
+                        "change_pct": change_pct,
+                        "sparkline": sparkline_vals
+                    }
+    except Exception as e:
+        print(f"Error fetching market overview: {e}")
     return overview
 
 import requests
