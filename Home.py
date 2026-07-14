@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 # Import custom modules
 from components.ui import load_custom_css, render_header, render_metric_card, render_status_sidebar, format_currency, render_currency_selector, render_top_left_logo, inject_html
 from database.db_manager import get_watchlist, add_to_watchlist, remove_from_watchlist, get_backtest_history
-from utils.data_loader import fetch_ticker_data, get_market_overview, search_ticker
+from utils.data_loader import fetch_ticker_data, get_market_overview, search_ticker, fetch_multiple_tickers
 from charts.terminal import plot_equity_curve
 
 # Configure page
@@ -171,10 +171,12 @@ else:
 
         # Render Watchlist Cards/Rows
         if watchlist:
+            watchlist_tickers = [item['ticker'] for item in watchlist]
+            watchlist_dfs = fetch_multiple_tickers(watchlist_tickers)
+            
             for idx, item in enumerate(watchlist):
                 ticker = item['ticker']
-                # Fetch latest price info
-                df_ticker = fetch_ticker_data(ticker, (datetime.now() - timedelta(days=5)).strftime("%Y-%m-%d"), datetime.now().strftime("%Y-%m-%d"))
+                df_ticker = watchlist_dfs.get(ticker, pd.DataFrame())
                 if not df_ticker.empty and len(df_ticker) >= 2:
                     last_price = df_ticker['close'].iloc[-1]
                     prev_price = df_ticker['close'].iloc[-2]
